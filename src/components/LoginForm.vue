@@ -8,56 +8,52 @@
       <label for="password">pw: </label>
       <input type="text" id="password" v-model="password" />
     </div>
-    <div>
-      <label for="nickname">nickname: </label>
-      <input type="text" id="nickname" v-model="nickname" />
-    </div>
-    <button
-      :disabled="!isUsernameVaildate || !password || !nickname"
-      type="submit"
-    >
-      sign up
+    <button v-bind:disabled="!isUsernameValid || !password" type="submit">
+      로그인
     </button>
     <p>{{ logMessage }}</p>
   </form>
 </template>
 
 <script>
-import { registerUser } from '@/api/index';
+import { loginUser } from '@/api/index';
 import { validateEmail } from '@/utils/validation';
 
 export default {
   data() {
     return {
-      //form value
       username: '',
       password: '',
-      nickname: '',
-      //log
       logMessage: '',
     };
   },
   computed: {
-    isUsernameVaildate() {
+    isUsernameValid() {
       return validateEmail(this.username);
     },
   },
   methods: {
     async submitForm() {
-      console.log('폼 제출');
-      const userData = {
-        username: this.username,
-        password: this.password,
-        nickname: this.nickname,
-      };
-      const { data } = await registerUser(userData);
-      this.logMessage = `${data.username} 님이 가입되었습니다.`;
-      this.initForm();
+      try {
+        // 비즈니스 로직
+        const userData = {
+          username: this.username,
+          password: this.password,
+        };
+        const { data } = await loginUser(userData);
+        console.log(data.user.username);
+        this.logMessage = `${data.user.username} 님 환영합니다.`;
+      } catch (error) {
+        // 에러 핸들링 코드
+        console.log(error.response);
+        this.logMessage = error.response.data;
+      } finally {
+        this.initForm();
+      }
     },
     initForm() {
       this.username = '';
       this.password = '';
-      this.nickname = '';
     },
   },
 };

@@ -1,5 +1,4 @@
 import axios from 'axios';
-import Vue from 'vue';
 
 // axios에서 지원하는 baseURL에 공통된 부분을 선언하고 재사용한다.
 const instance = axios.create({
@@ -12,4 +11,8 @@ function registerUser(userData) {
   return instance.post('signup', userData);
 }
 
-export { registerUser };
+function loginUser(userData) {
+  return instance.post('login', userData);
+}
+
+export { registerUser, loginUser };
