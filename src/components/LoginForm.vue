@@ -56,8 +56,12 @@ export default {
           password: this.password,
         };
         const { data } = await loginUser(userData);
+        // 메인 페이지로 이동
         console.log(data.user.username);
-        this.logMessage = `${data.user.username} 님 환영합니다`;
+        // store 에서 mutations 를 불러옴
+        this.$store.commit('setUsername', data.user.username);
+        this.$router.push('/main');
+        // this.logMessage = `${data.user.username} 님 환영합니다`;
         // this.initForm();
       } catch (error) {
         // 에러 핸들링할 코드
